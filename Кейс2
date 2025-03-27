@@ -1,0 +1,73 @@
+def display_number(number):
+    digits = [
+        " **** ", "* *", "* *", "* *", " **** ",   # 0
+        " * ", " * ", " * ", " * ", " * ",         # 1
+        " **** ", " *", " *** ", "* ", "**** ",    # 2
+        " **** ", " *", " ****", "* ", " ****",    # 3
+        "* *", "* *", "**** *", " *", " *",        # 4
+        "**** ", "* ", "****", " *", "**** ",      # 5
+        " ****", "* ", "****", "* *", " **** ",    # 6
+        "****", " *", " *", " *", " *",            # 7
+        " **** ", "* *", " **** ", "* *", " **** ",# 8
+        " **** ", "* *", " **** ", " *", " **** "  # 9
+    ]
+    
+    lines = []
+    digits_array = [int(d) for d in str(number)]
+    
+    for i in range(5):
+        line = ''
+        for digit in digits_array:
+            line += digits[digit * 5 + i] + ' '
+        lines.append(line)
+    return lines
+
+def is_leap_year(year):
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+
+def get_day_of_week(date):
+    import calendar
+    day_names = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    return day_names[calendar.weekday(date.year, date.month, date.day)]
+
+def calculate_age(birth_year):
+    from datetime import date
+    current_year = date.today().year
+    return current_year - birth_year
+
+try:
+    # Получение данных от пользователя
+    day = int(input("Введите день рождения: "))
+    month = int(input("Введите месяц рождения: "))
+    year = int(input("Введите год рождения: "))
+    
+    # Проверка корректности даты
+    from datetime import date
+    birth_date = date(year, month, day)
+    
+    # Вывод результатов
+    print(f"День недели рождения: {get_day_of_week(birth_date)}")
+    print(f"Високосный год: {'да' if is_leap_year(year) else 'нет'}")
+    print(f"Возраст: {calculate_age(year)} лет")
+    
+    # Форматирование даты для отображения
+    formatted_date = [
+        str(day).zfill(2),
+        str(month).zfill(2),
+        str(year)
+    ]
+    
+    # Вывод даты на "табло"
+    date_lines = [
+        display_number(formatted_date[0]),
+        display_number(formatted_date[1]),
+        display_number(formatted_date[2])
+    ]
+    
+    for i in range(5):
+        print(f"{date_lines[0][i]} {date_lines[1][i]} {date_lines[2][i]}")
+
+except ValueError as e:
+    print("Ошибка: Некорректная дата или значение")
+except Exception as e:
+    print(f"Произошла ошибка: {e}")
