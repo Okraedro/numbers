@@ -1,73 +1,51 @@
-def display_number(number):
-    digits = [
-        " **** ", "* *", "* *", "* *", " **** ",   # 0
-        " * ", " * ", " * ", " * ", " * ",         # 1
-        " **** ", " *", " *** ", "* ", "**** ",    # 2
-        " **** ", " *", " ****", "* ", " ****",    # 3
-        "* *", "* *", "**** *", " *", " *",        # 4
-        "**** ", "* ", "****", " *", "**** ",      # 5
-        " ****", "* ", "****", "* *", " **** ",    # 6
-        "****", " *", " *", " *", " *",            # 7
-        " **** ", "* *", " **** ", "* *", " **** ",# 8
-        " **** ", "* *", " **** ", " *", " **** "  # 9
-    ]
-    
-    lines = []
-    digits_array = [int(d) for d in str(number)]
-    
-    for i in range(5):
-        line = ''
-        for digit in digits_array:
-            line += digits[digit * 5 + i] + ' '
-        lines.append(line)
-    return lines
+import datetime
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
 
-def is_leap_year(year):
-    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+➔	Напишите программу, которая запрашивает у пользователя последовательно день его рождения, месяц и год:
 
-def get_day_of_week(date):
-    import calendar
-    day_names = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    return day_names[calendar.weekday(date.year, date.month, date.day)]
+print('Please enter when you were born, enter number only!')
+day = int(input('Enter day: '))
+month = int(input('Month: '))
+year = int(input('Yeah: '))
+TODAY = datetime.date.today()
 
-def calculate_age(birth_year):
-    from datetime import date
-    current_year = date.today().year
-    return current_year - birth_year
 
-try:
-    # Получение данных от пользователя
-    day = int(input("Введите день рождения: "))
-    month = int(input("Введите месяц рождения: "))
-    year = int(input("Введите год рождения: "))
-    
-    # Проверка корректности даты
-    from datetime import date
-    birth_date = date(year, month, day)
-    
-    # Вывод результатов
-    print(f"День недели рождения: {get_day_of_week(birth_date)}")
-    print(f"Високосный год: {'да' if is_leap_year(year) else 'нет'}")
-    print(f"Возраст: {calculate_age(year)} лет")
-    
-    # Форматирование даты для отображения
-    formatted_date = [
-        str(day).zfill(2),
-        str(month).zfill(2),
-        str(year)
-    ]
-    
-    # Вывод даты на "табло"
-    date_lines = [
-        display_number(formatted_date[0]),
-        display_number(formatted_date[1]),
-        display_number(formatted_date[2])
-    ]
-    
-    for i in range(5):
-        print(f"{date_lines[0][i]} {date_lines[1][i]} {date_lines[2][i]}")
+➔	Напишите функцию, которая определяет какому дню недели соответствует эта дата:
 
-except ValueError as e:
-    print("Ошибка: Некорректная дата или значение")
-except Exception as e:
-    print(f"Произошла ошибка: {e}")
+week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+week_num=datetime.date(year,month,day).weekday()
+print(week_days[week_num])
+
+➔	Напишите функцию, которая определяет - високосный это был год, или нет:
+
+if year % 4 != 0:
+    print('Leap Year.')
+
+elif year % 100 == 0:
+    if year % 400 == 0:
+        print('Leap year.')
+    else:
+        print('Year is not leap.')
+else:
+    print('Leap Year.')
+
+➔	Напишите функцию, которая определяет сколько сейчас лет пользователю:
+
+print(f'Your age - {TODAY.year - year - ((TODAY.month, TODAY.day) < (month, day))} !')
+
+➔	Реализуйте вывод в консоль даты рождения пользователя в формате дд мм гггг, где цифры прорисованы звёздочками (*), как на электронном табло:
+
+day = str(day) 
+month = str (month)
+year = str (year)
+text = (day + '  ' + month + '  ' + year)
+myfont = ImageFont.truetype("verdanab.ttf", 12)
+size = myfont.getbbox(text)[2:]
+img = Image.new("1",size,"black")
+draw = ImageDraw.Draw(img)
+draw.text((0, 0), text, "white", font=myfont)
+pixels = np.array(img, dtype=np.uint8)
+chars = np.array([' ','*'], dtype="U1")[pixels]
+strings = chars.view('U' + str(chars.shape[1])).flatten()
+print( "\n".join(strings))
